@@ -3,47 +3,72 @@ package com.test.bill;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.test.bill.builder.Category;
+import com.test.bill.builder.Item;
+import com.test.bill.builder.ItemDTO;
+
 public class BillCalculator {
 	
 	
 	public static void main(String[] args) {
 		
-		List<Item> itemList = new ArrayList<Item>();
+		List<ItemDTO> itemList = new ArrayList<ItemDTO>();
 		
-		Item item = new Item();
-		item.setItemName("Dettol");
-		item.setItemId("1264ED");
-		item.setCategory("Medical");
-		item.setPrice(10);
+		ItemDTO itemDTO = new ItemDTO.Builder()
+								.category(new Category.Builder()
+										.categoryType("Medical")
+										.build())
+								.item(new Item.Builder()
+										.setItemName("Dettol")
+										.setPrice(10)
+										.build())
+								.build();
+		
+		 
+		ItemDTO itemDTO1 = new ItemDTO.Builder()
+								.category(new Category.Builder()
+										.categoryType("Non_Medical")
+										.build())
+								.item(new Item.Builder()
+										.setItemName("Oil")
+										.setPrice(5)
+										.build())
+								.build();
+		
+		ItemDTO itemDTO2 = new ItemDTO.Builder()
+				.category(new Category.Builder()
+						.categoryType("None")
+						.build())
+				.item(new Item.Builder()
+						.setItemName("Banana")
+						.setPrice(5)
+						.build())
+				.build();
+		
+		itemList.add(itemDTO);
+		itemList.add(itemDTO1);
+		itemList.add(itemDTO2);
 		
 		
-		Item item1 = new Item();
-		item1.setItemName("Oil");
-		item1.setItemId("1263ED");
-		item1.setCategory("Non Medical");
-		item1.setPrice(5);
 		
-		Item item2 = new Item();
-		item2.setItemName("Banana");
-		item2.setItemId("12632ED");
-		item2.setCategory("None");
-		item2.setPrice(5);
 		
-		itemList.add(item);	
-		itemList.add(item1);
-		itemList.add(item2);
 		
-		Double amount =AppUtil.generateBill(itemList);
+		List<Item> items =AppUtil.generateBill(itemList);
 		
 		System.out.println("\n*******ABC General Store **************\n");
-		System.out.println("Item      Category     Price ");
+		System.out.println("Item      Category     Price                Tax On Item");
 		System.out.println("-----------------------------------------------");
-		for(Item list : itemList) {
-			System.out.println(list.getItemName()+ "       "+list.getCategory()+"         "+list.getPrice());
+		Double totalAmount = 0.0;
+		if(items != null && !items.isEmpty()) {
+			for(Item list : items) {
+				totalAmount = totalAmount + list.getTotalAmount();
+				System.out.println(list.getItemName()+ "                "+list.getPrice()+"                  "+list.getTaxOnTime());
+			}
 		}
+	
 		
 		System.out.println("-----------------------------------------------");
-		System.out.println("Bill Amount : "+amount);
+		System.out.println("Bill Amount : "+totalAmount);
 		
 	}
 	
